@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:nfc/src/common/application/application/application_cubit.dart';
 import 'package:nfc/src/common/presentation/components/primary_text_field.dart';
-import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 import 'package:nfc/src/user/domain/user.dart';
 
 class UpdateUserPage extends HookWidget {
@@ -13,13 +13,14 @@ class UpdateUserPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final nameController = useTextEditingController();
-    final nidController = useTextEditingController();
     final imageController = useTextEditingController();
     final birthDate = useState('');
 
+    final subject = useState(<String>['', '', '']);
+    final values = useState(<String>['', '', '']);
+
     useEffect(() {
       nameController.text = user.name;
-      nidController.text = user.nid;
       imageController.text = user.imageUrl;
       birthDate.value = user.birthDate;
 
@@ -38,11 +39,19 @@ class UpdateUserPage extends HookWidget {
         PrimaryTextField(
           controller: nameController,
           label: 'Name',
+          onChanged: (value) {
+            subject.value[0] = 'Name';
+            values.value[0] = value;
+          },
         ),
         const SizedBox(height: 16),
         PrimaryTextField(
           controller: imageController,
           label: 'Image Url',
+          onChanged: (value) {
+            subject.value[1] = 'Image Url';
+            values.value[1] = value;
+          },
         ),
         const SizedBox(height: 16),
         OutlinedButton(
@@ -55,20 +64,35 @@ class UpdateUserPage extends HookWidget {
             );
 
             birthDate.value = chosenDate.toString();
+
+            subject.value[2] = 'Birth Date';
+            values.value[2] = chosenDate.toString();
           },
           child: Text(birthDate.value.substring(0, 11)),
         ),
         const Spacer(),
         ElevatedButton(
           onPressed: () {
-            // context.read<AuthCubit>().updateUser(
-            //       name: nameController.text,
-            //       nid: nidController.text,
-            //       birthDate: birthDate.value,
-            //       imageUrl: imageController.text,
-            //     );
+            late String message = 'Update ';
+            final updatedSubjects =
+                subject.value.where((element) => element.isNotEmpty).toList();
+            final updatedMarks =
+                values.value.where((element) => element.isNotEmpty).toList();
 
-            // Navigator.of(context).pop();
+            for (int i = 0; i < updatedSubjects.length; i++) {
+              message = message +
+                  updatedSubjects[i] +
+                  ' to ' +
+                  updatedMarks[i] +
+                  ', ';
+            }
+
+            context.read<ApplicationCubit>().createApplications(
+                  nid: user.nid,
+                  message: message.substring(0, message.length - 2) + '.',
+                  status: 'Pending',
+                  applicationType: 'NID',
+                );
           },
           child: const Text('Request for change'),
         ),

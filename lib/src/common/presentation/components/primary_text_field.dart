@@ -5,10 +5,12 @@ class PrimaryTextField extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.label,
+    this.onChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String label;
+  final Function(String value)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class PrimaryTextField extends StatelessWidget {
         TextFormField(
           autovalidateMode: AutovalidateMode.always,
           controller: controller,
+          onChanged: onChanged,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return '$label cannot be empty';
