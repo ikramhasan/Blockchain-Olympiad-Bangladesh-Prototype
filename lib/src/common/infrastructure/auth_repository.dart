@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
+import 'package:nfc/src/common/domain/application.dart';
 import 'package:nfc/src/common/domain/certificate.dart';
 import 'package:nfc/src/common/domain/i_auth_repository.dart';
 import 'package:nfc/src/user/domain/user.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AuthRepository implements IAuthRepository {
   List<User> users = [];
   List<Certificate> certificates = [];
+  List<Application> applications = [];
 
   final String _rpcUrl = dotenv.env['RPC_URL']!;
   final String _wsUrl = dotenv.env['WEBSOCKET_URL']!;
@@ -22,8 +24,10 @@ class AuthRepository implements IAuthRepository {
   late Web3Client _web3client;
   late ContractAbi _usersABICode;
   late ContractAbi _certificatesABICode;
+  late ContractAbi _applicationsABICode;
   late EthereumAddress _usersContractAddress;
-  late EthereumAddress _CertificatesContractAddress;
+  late EthereumAddress _certificatesContractAddress;
+  late EthereumAddress _applicationsContractAddress;
   late EthPrivateKey _creds;
 
   AuthRepository._();
@@ -74,13 +78,13 @@ class AuthRepository implements IAuthRepository {
   Future<void> _getAbi() async {
     final usersABIFile =
         await rootBundle.loadString('build/contracts/UsersContract.json');
-
     final usersJsonABI = jsonDecode(usersABIFile);
-
     _usersABICode = ContractAbi.fromJson(
       jsonEncode(usersJsonABI['abi']),
       'UsersContract',
     );
+    _usersContractAddress =
+        EthereumAddress.fromHex(usersJsonABI["networks"]["5777"]["address"]);
 
     final certificatesABIFile = await rootBundle
         .loadString('build/contracts/CertificatesContract.json');
@@ -89,11 +93,18 @@ class AuthRepository implements IAuthRepository {
       jsonEncode(certificatesJsonABI['abi']),
       'CertificatesContract',
     );
-
-    _usersContractAddress =
-        EthereumAddress.fromHex(usersJsonABI["networks"]["5777"]["address"]);
-    _CertificatesContractAddress = EthereumAddress.fromHex(
+    _certificatesContractAddress = EthereumAddress.fromHex(
         certificatesJsonABI["networks"]["5777"]["address"]);
+
+    final applicationsABIFile = await rootBundle
+        .loadString('build/contracts/ApplicationsContract.json');
+    final applicationsJsonABI = jsonDecode(applicationsABIFile);
+    _applicationsABICode = ContractAbi.fromJson(
+      jsonEncode(applicationsJsonABI['abi']),
+      'ApplicationsContract',
+    );
+    _applicationsContractAddress = EthereumAddress.fromHex(
+        applicationsJsonABI["networks"]["5777"]["address"]);
   }
 
   Future<void> _getCredentials() async {
@@ -102,20 +113,30 @@ class AuthRepository implements IAuthRepository {
 
   late DeployedContract _usersDeployedContract;
   late DeployedContract _certificatesDeployedContract;
+  late DeployedContract _applicationsDeployedContract;
+
   late ContractFunction _createUser;
   late ContractFunction _updateUser;
   late ContractFunction _users;
   late ContractFunction _userCount;
+
   late ContractFunction _createCertificate;
   late ContractFunction _updateCertificate;
   late ContractFunction _certificates;
   late ContractFunction _certificateCount;
 
+  late ContractFunction _createApplication;
+  late ContractFunction _updateApplication;
+  late ContractFunction _applications;
+  late ContractFunction _applicationCount;
+
   Future<void> _getDeployedContract() async {
     _usersDeployedContract =
         DeployedContract(_usersABICode, _usersContractAddress);
     _certificatesDeployedContract =
-        DeployedContract(_certificatesABICode, _CertificatesContractAddress);
+        DeployedContract(_certificatesABICode, _certificatesContractAddress);
+    _applicationsDeployedContract =
+        DeployedContract(_applicationsABICode, _applicationsContractAddress);
 
     _createUser = _usersDeployedContract.function('createUser');
     _updateUser = _usersDeployedContract.function('updateUser');
@@ -129,6 +150,14 @@ class AuthRepository implements IAuthRepository {
     _certificates = _certificatesDeployedContract.function('certificates');
     _certificateCount =
         _certificatesDeployedContract.function('certificateCount');
+
+    _createApplication =
+        _applicationsDeployedContract.function('createApplication');
+    _updateApplication =
+        _applicationsDeployedContract.function('updateApplication');
+    _applications = _applicationsDeployedContract.function('applications');
+    _applicationCount =
+        _applicationsDeployedContract.function('applicationCount');
   }
 
   @override
@@ -284,6 +313,87 @@ class AuthRepository implements IAuthRepository {
             BigInt.from(science),
             BigInt.from(religion),
           ],
+        ),
+      );
+
+      return right(unit);
+    } catch (e) {
+      print(e);
+      return left(Failure.general());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> createApplication({
+    required String nid,
+    required String message,
+    required String status,
+    required String applicationType,
+  }) async {
+    try {
+      await _web3client.sendTransaction(
+        _creds,
+        Transaction.callContract(
+          contract: _applicationsDeployedContract,
+          function: _createApplication,
+          parameters: [applicationType, nid, message, status],
+        ),
+      );
+
+      return right(unit);
+    } catch (e) {
+      print(e);
+      return left(Failure.general());
+    }
+  }
+
+  @override
+  Future<List<Application>> fetchApplications() async {
+    List totalApplicationsList = await _web3client.call(
+      contract: _applicationsDeployedContract,
+      function: _applicationCount,
+      params: [],
+    );
+
+    int totalApplicationsLength = totalApplicationsList[0].toInt();
+    applications.clear();
+
+    for (int i = 0; i < totalApplicationsLength; i++) {
+      var temp = await _web3client.call(
+        contract: _applicationsDeployedContract,
+        function: _applications,
+        params: [BigInt.from(i)],
+      );
+
+      if (temp[1] != '') {
+        applications.add(
+          Application(
+            applicationType: temp[1],
+            nid: temp[2],
+            message: temp[3],
+            status: temp[4],
+          ),
+        );
+      }
+    }
+
+    return applications;
+  }
+
+  @override
+  Future<Either<Failure, Unit>> updateApplication({
+    required String nid,
+    required String message,
+    required String status,
+    required String applicationType,
+  }) async {
+    try {
+      await _web3client.sendTransaction(
+        _creds,
+        Transaction.callContract(
+          contract: _applicationsDeployedContract,
+          function: _updateApplication,
+          parameters: [applicationType, nid, message, status],
         ),
       );
 

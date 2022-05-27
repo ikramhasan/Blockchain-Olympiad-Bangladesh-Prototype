@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:nfc/src/admin/presentation/components/applications_sidebar.dart';
 import 'package:nfc/src/admin/presentation/components/certificate_grid.dart';
 import 'package:nfc/src/admin/presentation/components/create_certificate_drawer.dart';
 import 'package:nfc/src/admin/presentation/components/sidebar_tile.dart';
@@ -43,7 +44,7 @@ class HomePage extends HookWidget {
                 ),
                 SideBarTile(
                   isActive: pageIndex.value == 1,
-                  text: 'NID',
+                  text: 'Digital NID',
                   onTap: () {
                     pageIndex.value = 1;
                   },
@@ -66,7 +67,7 @@ class HomePage extends HookWidget {
           const VerticalDivider(),
           if (pageIndex.value == 0)
             Expanded(
-              flex: 5,
+              flex: 4,
               child: FadeInUp(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -119,9 +120,14 @@ class HomePage extends HookWidget {
               ),
             ),
           const VerticalDivider(),
-          const Expanded(
+          Expanded(
             flex: 1,
-            child: SizedBox.shrink(),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                ApplicationsSideBar(nid: user.nid),
+              ],
+            ),
           ),
         ],
       ),

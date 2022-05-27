@@ -38,6 +38,7 @@ flutter:
   assets:
     - build/contracts/UsersContract.json
     - build/contracts/CertificatesContract.json
+    - build/contracts/ApplicationsContract.json
     - assets/light_effect.json
     - assets/web3.json
     - assets/blockchain.json

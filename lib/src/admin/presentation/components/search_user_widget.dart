@@ -33,7 +33,8 @@ class SearchUserWidget extends HookWidget {
           onChanged: (value) {
             matchedUser.value = users
                 .where((user) =>
-                    user.name.startsWith(value) || user.nid.startsWith(value))
+                    user.name.toLowerCase().startsWith(value.toLowerCase()) ||
+                    user.nid.toLowerCase().startsWith(value.toLowerCase()))
                 .toList();
           },
         ),

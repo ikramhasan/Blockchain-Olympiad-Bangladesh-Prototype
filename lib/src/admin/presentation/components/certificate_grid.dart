@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nfc/src/admin/presentation/components/certificate_card.dart';
 import 'package:nfc/src/common/domain/certificate.dart';
+import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 import 'package:nfc/src/user/domain/user.dart';
 
 class CertificateGrid extends StatelessWidget {
@@ -19,6 +21,9 @@ class CertificateGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isAdmin) {
+      context.read<AuthCubit>().getUsers();
+    }
     return GridView.builder(
       padding: EdgeInsets.zero,
       itemCount: certificates.length,

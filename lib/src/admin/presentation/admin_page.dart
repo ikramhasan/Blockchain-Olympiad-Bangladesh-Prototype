@@ -2,11 +2,13 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:nfc/src/admin/presentation/components/applications_sidebar.dart';
 import 'package:nfc/src/admin/presentation/components/certificate_grid.dart';
 import 'package:nfc/src/admin/presentation/components/create_certificate_drawer.dart';
 import 'package:nfc/src/admin/presentation/components/search_user_widget.dart';
 import 'package:nfc/src/admin/presentation/components/sidebar_tile.dart';
 import 'package:nfc/src/admin/presentation/components/user_list.dart';
+import 'package:nfc/src/common/application/application/application_cubit.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
 import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 import 'package:nfc/src/common/presentation/components/loading_widget.dart';
@@ -61,6 +63,7 @@ class AdminPage extends HookWidget {
                     if (state is AuthLoaded) {
                       context.read<AuthCubit>().getUsers();
                       context.read<CertificateCubit>().getCertificates();
+                      context.read<ApplicationCubit>().getApplications();
                     } else if (state is UserLoaded) {
                       users.value = state.users;
                     } else if (state is AuthFailure) {
@@ -111,7 +114,13 @@ class AdminPage extends HookWidget {
             const VerticalDivider(),
             Expanded(
               flex: 1,
-              child: SearchUserWidget(users: users.value),
+              child: Column(
+                children: [
+                  SearchUserWidget(users: users.value),
+                  const SizedBox(height: 32),
+                  const ApplicationsSideBar(),
+                ],
+              ),
             ),
           ],
         ),

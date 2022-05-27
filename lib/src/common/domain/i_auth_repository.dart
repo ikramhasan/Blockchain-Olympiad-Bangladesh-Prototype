@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:nfc/src/common/domain/application.dart';
 import 'package:nfc/src/common/domain/certificate.dart';
 import 'package:nfc/src/user/domain/user.dart';
 import 'package:nfc/src/common/domain/failure.dart';
@@ -20,6 +21,22 @@ abstract class IAuthRepository {
     required String nid,
     required String birthDate,
     required String imageUrl,
+  });
+
+  Future<List<Application>> fetchApplications();
+
+  Future<Either<Failure, Unit>> createApplication({
+    required String nid,
+    required String message,
+    required String status,
+    required String applicationType,
+  });
+
+  Future<Either<Failure, Unit>> updateApplication({
+    required String nid,
+    required String message,
+    required String status,
+    required String applicationType,
   });
 
   Future<List<Certificate>> fetchCertificates();

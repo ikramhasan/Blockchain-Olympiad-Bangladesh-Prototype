@@ -5,10 +5,12 @@ class NumberTextField extends StatelessWidget {
     Key? key,
     required this.controller,
     required this.label,
+    this.onChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
   final String label;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class NumberTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           autovalidateMode: AutovalidateMode.always,
+          onChanged: onChanged,
           validator: (value) {
             final number = int.tryParse(value!);
             if (number == null) {

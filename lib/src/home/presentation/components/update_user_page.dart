@@ -61,14 +61,14 @@ class UpdateUserPage extends HookWidget {
         const Spacer(),
         ElevatedButton(
           onPressed: () {
-            context.read<AuthCubit>().updateUser(
-                  name: nameController.text,
-                  nid: nidController.text,
-                  birthDate: birthDate.value,
-                  imageUrl: imageController.text,
-                );
+            // context.read<AuthCubit>().updateUser(
+            //       name: nameController.text,
+            //       nid: nidController.text,
+            //       birthDate: birthDate.value,
+            //       imageUrl: imageController.text,
+            //     );
 
-            Navigator.of(context).pop();
+            // Navigator.of(context).pop();
           },
           child: const Text('Request for change'),
         ),

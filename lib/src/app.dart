@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nfc/src/admin/application/cubit/drawer_cubit.dart';
+import 'package:nfc/src/common/application/application/application_cubit.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
 import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 import 'package:nfc/src/common/infrastructure/auth_repository.dart';
@@ -17,6 +18,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider<CertificateCubit>(
           create: (context) => CertificateCubit(AuthRepository.instance),
+        ),
+        BlocProvider<ApplicationCubit>(
+          create: (context) => ApplicationCubit(AuthRepository.instance),
         ),
         BlocProvider<DrawerCubit>(
           create: (context) => DrawerCubit(),

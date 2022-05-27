@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nfc/src/common/application/application/application_cubit.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
 import 'package:nfc/src/common/presentation/components/loading_widget.dart';
 import 'package:nfc/src/common/presentation/handlers/error_handler.dart';
@@ -18,6 +19,7 @@ class UserWrapper extends StatelessWidget {
           if (state is AuthLoaded) {
             context.read<AuthCubit>().getUsers();
             context.read<CertificateCubit>().getCertificates();
+            context.read<ApplicationCubit>().getApplications();
           } else if (state is AuthFailure) {
             showError(context, state.message);
           }
