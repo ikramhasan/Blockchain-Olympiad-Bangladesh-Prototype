@@ -40,7 +40,7 @@ class CertificateGrid extends StatelessWidget {
                 .where((user) => user.nid == certificate.nid)
                 .toList()
                 .first,
-                isAdmin: isAdmin,
+            isAdmin: isAdmin,
           ),
         );
       },
