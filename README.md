@@ -13,7 +13,7 @@ A Blockchain-Based Network of Non-interchangeable Academic and Medical Certifica
 - [x] update certificates
 - [x] update user 
 - [x] add search user functionality
-- [ ] let users apply for changes in certificates
-- [ ] let users apply for changes in nid
-- [ ] add sidepanel in user dashboard
+- [x] let users apply for changes in certificates
+- [x] let users apply for changes in nid
+- [x] add sidepanel in user dashboard
 - [ ] implement permissions for viewing certificates 
