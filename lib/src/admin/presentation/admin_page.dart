@@ -10,6 +10,7 @@ import 'package:nfc/src/admin/presentation/components/sidebar_tile.dart';
 import 'package:nfc/src/admin/presentation/components/user_list.dart';
 import 'package:nfc/src/common/application/application/application_cubit.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
+import 'package:nfc/src/common/presentation/components/heading_widget.dart';
 import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 import 'package:nfc/src/common/presentation/components/loading_widget.dart';
 import 'package:nfc/src/common/presentation/handlers/error_handler.dart';
@@ -51,13 +52,21 @@ class AdminPage extends HookWidget {
                     },
                     icon: Icons.assessment_rounded,
                   ),
+                  SideBarTile(
+                    isActive: pageIndex.value == 2,
+                    text: 'Applications',
+                    onTap: () {
+                      pageIndex.value = 2;
+                    },
+                    icon: Icons.feed_rounded,
+                  ),
                 ],
               ),
             ),
             const VerticalDivider(),
             if (pageIndex.value == 0)
               Expanded(
-                flex: 5,
+                flex: 6,
                 child: BlocConsumer<AuthCubit, AuthState>(
                   listener: (context, state) {
                     if (state is AuthLoaded) {
@@ -74,7 +83,10 @@ class AdminPage extends HookWidget {
                     if (state is UserLoaded) {
                       return FadeInUp(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const HeadingWidget(text: 'Users'),
+                            const SizedBox(height: 16),
                             UserListView(users: state.users),
                           ],
                         ),
@@ -87,14 +99,17 @@ class AdminPage extends HookWidget {
               )
             else if (pageIndex.value == 1)
               Expanded(
-                flex: 5,
+                flex: 6,
                 child: BlocBuilder<CertificateCubit, CertificateState>(
                   builder: (context, state) {
                     if (state is CertificateLoaded) {
-                      return FadeInUp(
-                        child: SingleChildScrollView(
+                      return SingleChildScrollView(
+                        child: FadeInUp(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const HeadingWidget(text: 'Certificates'),
+                              const SizedBox(height: 16),
                               CertificateGrid(
                                 certificates: state.certificates,
                                 crossAxisCount: 2,
@@ -110,10 +125,15 @@ class AdminPage extends HookWidget {
                     return const LoadingWidget();
                   },
                 ),
+              )
+            else if (pageIndex.value == 2)
+              const Expanded(
+                flex: 6,
+                child: ApplicationsSideBar(),
               ),
             const VerticalDivider(),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Column(
                 children: [
                   SearchUserWidget(users: users.value),

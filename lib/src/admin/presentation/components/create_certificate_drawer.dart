@@ -171,8 +171,7 @@ class CreateCertificateDrawer extends HookWidget {
                             context.read<ApplicationCubit>().createApplications(
                                   nid: state.nid,
                                   message:
-                                      message.substring(0, message.length - 2) +
-                                          '.',
+                                      message.substring(0, message.length - 2),
                                   status: 'Pending',
                                   applicationType: 'Certificate',
                                 );

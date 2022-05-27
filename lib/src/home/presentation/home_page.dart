@@ -67,7 +67,7 @@ class HomePage extends HookWidget {
           const VerticalDivider(),
           if (pageIndex.value == 0)
             Expanded(
-              flex: 4,
+              flex: 6,
               child: FadeInUp(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -108,7 +108,7 @@ class HomePage extends HookWidget {
             )
           else
             Expanded(
-              flex: 5,
+              flex:6 ,
               child: Center(
                 child: SizedBox(
                   width: 400,
@@ -121,7 +121,7 @@ class HomePage extends HookWidget {
             ),
           const VerticalDivider(),
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Column(
               children: [
                 const SizedBox(height: 16),

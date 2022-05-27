@@ -89,7 +89,7 @@ class UpdateUserPage extends HookWidget {
 
             context.read<ApplicationCubit>().createApplications(
                   nid: user.nid,
-                  message: message.substring(0, message.length - 2) + '.',
+                  message: message.substring(0, message.length - 2),
                   status: 'Pending',
                   applicationType: 'NID',
                 );
