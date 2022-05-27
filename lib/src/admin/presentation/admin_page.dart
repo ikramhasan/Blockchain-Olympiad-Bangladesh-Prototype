@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nfc/src/admin/presentation/components/certificate_grid.dart';
 import 'package:nfc/src/admin/presentation/components/create_certificate_drawer.dart';
+import 'package:nfc/src/admin/presentation/components/search_user_widget.dart';
 import 'package:nfc/src/admin/presentation/components/sidebar_tile.dart';
 import 'package:nfc/src/admin/presentation/components/user_list.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
@@ -88,15 +89,17 @@ class AdminPage extends HookWidget {
                   builder: (context, state) {
                     if (state is CertificateLoaded) {
                       return FadeInUp(
-                        child: Column(
-                          children: [
-                            CertificateGrid(
-                              certificates: state.certificates,
-                              crossAxisCount: 3,
-                              users: users.value,
-                              isAdmin: true,
-                            ),
-                          ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              CertificateGrid(
+                                certificates: state.certificates,
+                                crossAxisCount: 2,
+                                users: users.value,
+                                isAdmin: true,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }
@@ -105,6 +108,11 @@ class AdminPage extends HookWidget {
                   },
                 ),
               ),
+            const VerticalDivider(),
+            Expanded(
+              flex: 1,
+              child: SearchUserWidget(users: users.value),
+            ),
           ],
         ),
       ),
