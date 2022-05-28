@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nfc/src/admin/presentation/components/user_update_dialog.dart';
+import 'package:nfc/src/common/presentation/components/async_image.dart';
 import 'package:nfc/src/user/domain/user.dart';
 
 class SearchUserWidget extends HookWidget {
@@ -54,7 +55,7 @@ class SearchUserWidget extends HookWidget {
                   ),
                 );
               },
-              leading: Image.network(user.imageUrl),
+              leading: AsyncImage(url: user.imageUrl),
               title: Text(user.name),
               subtitle: Text(user.nid),
             );

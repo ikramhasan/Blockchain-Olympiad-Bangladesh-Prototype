@@ -7,6 +7,7 @@ import 'package:nfc/src/admin/presentation/components/certificate_grid.dart';
 import 'package:nfc/src/admin/presentation/components/create_certificate_drawer.dart';
 import 'package:nfc/src/admin/presentation/components/sidebar_tile.dart';
 import 'package:nfc/src/common/application/certificate/certificate_cubit.dart';
+import 'package:nfc/src/common/presentation/components/async_image.dart';
 import 'package:nfc/src/common/presentation/components/loading_widget.dart';
 import 'package:nfc/src/home/presentation/components/update_user_page.dart';
 import 'package:nfc/src/user/domain/user.dart';
@@ -52,11 +53,7 @@ class HomePage extends HookWidget {
                 ),
                 const Spacer(),
                 ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      user.imageUrl,
-                    ),
-                  ),
+                  leading: AsyncImage(url: user.imageUrl),
                   title: Text(user.name),
                   subtitle: Text(user.nid),
                 ),
@@ -108,7 +105,7 @@ class HomePage extends HookWidget {
             )
           else
             Expanded(
-              flex:6 ,
+              flex: 6,
               child: Center(
                 child: SizedBox(
                   width: 400,

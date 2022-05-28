@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:nfc/src/common/infrastructure/ipfs_service.dart';
 import 'package:nfc/src/common/presentation/components/primary_text_field.dart';
 import 'package:nfc/src/common/presentation/handlers/error_handler.dart';
-import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 
 class UserLoginPage extends HookWidget {
   const UserLoginPage({Key? key}) : super(key: key);
@@ -12,8 +13,9 @@ class UserLoginPage extends HookWidget {
   Widget build(BuildContext context) {
     final nameController = useTextEditingController();
     final nidController = useTextEditingController();
-    final imageController = useTextEditingController();
     final birthDate = useState('');
+    final fileName = useState('');
+    final imagePath = useState('');
 
     return Scaffold(
       appBar: AppBar(
@@ -34,6 +36,15 @@ class UserLoginPage extends HookWidget {
                 ),
               ),
               const SizedBox(height: 32),
+              imagePath.value.isNotEmpty
+                  ? CircleAvatar(
+                      radius: 50,
+                      backgroundImage: FileImage(File(imagePath.value)),
+                    )
+                  : const SizedBox.shrink(),
+              imagePath.value.isNotEmpty
+                  ? const SizedBox(height: 16)
+                  : const SizedBox.shrink(),
               PrimaryTextField(
                 controller: nameController,
                 label: 'Name',
@@ -44,9 +55,22 @@ class UserLoginPage extends HookWidget {
                 label: 'NID',
               ),
               const SizedBox(height: 16),
-              PrimaryTextField(
-                controller: imageController,
-                label: 'Image Url',
+              OutlinedButton(
+                onPressed: () async {
+                  final ipfsService = IPFSService();
+
+                  final failureOrSaveFile =
+                      await ipfsService.pickImageAndSaveToIPFS();
+
+                  failureOrSaveFile.fold(
+                    (l) => showError(context, l.message),
+                    (profilePhoto) {
+                      imagePath.value = profilePhoto.path;
+                      fileName.value = profilePhoto.name;
+                    },
+                  );
+                },
+                child: const Text('Upload Image'),
               ),
               const SizedBox(height: 16),
               OutlinedButton(
@@ -58,7 +82,11 @@ class UserLoginPage extends HookWidget {
                     lastDate: DateTime.now(),
                   );
 
-                  birthDate.value = chosenDate.toString();
+                  if (chosenDate != null) {
+                    birthDate.value = chosenDate.toString();
+                  } else {
+                    showError(context, 'Please select a date');
+                  }
                 },
                 child: Text(
                   birthDate.value.isEmpty
@@ -71,13 +99,16 @@ class UserLoginPage extends HookWidget {
                 onPressed: () {
                   if (birthDate.value.isEmpty) {
                     showError(context, 'Please choose a birth date');
+                  } else if (fileName.value.isEmpty) {
+                    showError(context, 'Please choose a file');
                   } else {
-                    context.read<AuthCubit>().createUser(
-                          name: nameController.text,
-                          nid: nidController.text,
-                          birthDate: birthDate.value,
-                          imageUrl: imageController.text,
-                        );
+                    print(fileName.value);
+                    // context.read<AuthCubit>().createUser(
+                    //       name: nameController.text,
+                    //       nid: nidController.text,
+                    //       birthDate: birthDate.value,
+                    //       imageUrl: fileName.value,
+                    //     );
                   }
                 },
                 child: const Text('Register'),

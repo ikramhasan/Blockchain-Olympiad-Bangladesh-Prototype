@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nfc/src/common/application/application/application_cubit.dart';
+import 'package:nfc/src/common/presentation/components/async_image.dart';
 import 'package:nfc/src/common/presentation/components/primary_text_field.dart';
 import 'package:nfc/src/user/domain/user.dart';
 
@@ -30,12 +31,7 @@ class UpdateUserPage extends HookWidget {
     return Column(
       children: [
         const SizedBox(height: 16),
-        CircleAvatar(
-          backgroundImage: NetworkImage(
-            imageController.text,
-          ),
-          maxRadius: 50,
-        ),
+        AsyncImage(url: user.imageUrl, radius: 50),
         PrimaryTextField(
           controller: nameController,
           label: 'Name',

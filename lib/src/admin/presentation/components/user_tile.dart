@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nfc/src/admin/application/cubit/drawer_cubit.dart';
 import 'package:nfc/src/admin/presentation/components/user_update_dialog.dart';
+import 'package:nfc/src/common/presentation/components/async_image.dart';
 import 'package:nfc/src/user/domain/user.dart';
 
 class UserTile extends HookWidget {
@@ -13,7 +14,7 @@ class UserTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.network(user.imageUrl),
+      leading: AsyncImage(url: user.imageUrl),
       title: Text(user.name),
       subtitle: Text(user.nid),
       trailing: SizedBox(
