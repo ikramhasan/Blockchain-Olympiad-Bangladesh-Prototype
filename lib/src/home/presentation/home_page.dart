@@ -11,6 +11,7 @@ import 'package:nfc/src/common/presentation/components/async_image.dart';
 import 'package:nfc/src/common/presentation/components/loading_widget.dart';
 import 'package:nfc/src/home/presentation/components/update_user_page.dart';
 import 'package:nfc/src/user/domain/user.dart';
+import 'package:nfc/src/user/presentation/components/view_requests.dart';
 
 class HomePage extends HookWidget {
   const HomePage({
@@ -45,7 +46,7 @@ class HomePage extends HookWidget {
                 ),
                 SideBarTile(
                   isActive: pageIndex.value == 1,
-                  text: 'Digital NID',
+                  text: 'Digital Birth Certificate',
                   onTap: () {
                     pageIndex.value = 1;
                   },
@@ -119,11 +120,22 @@ class HomePage extends HookWidget {
           const VerticalDivider(),
           Expanded(
             flex: 2,
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                ApplicationsSideBar(nid: user.nid),
-              ],
+            child: BlocBuilder<CertificateCubit, CertificateState>(
+              builder: (context, state) {
+                if (state is CertificateLoaded &&
+                    state.certificates.isNotEmpty) {
+                  return Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      ApplicationsSideBar(nid: user.nid),
+                      const SizedBox(height: 16),
+                      const ViewRequests(),
+                    ],
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
             ),
           ),
         ],

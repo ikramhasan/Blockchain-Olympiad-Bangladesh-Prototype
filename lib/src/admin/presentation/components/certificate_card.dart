@@ -26,7 +26,7 @@ class CertificateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              convertShortFormToFull(certificate.examType),
+              '${convertShortFormToFull(certificate.examType)} (${certificate.examType})',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

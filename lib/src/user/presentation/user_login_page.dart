@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nfc/src/common/infrastructure/ipfs_service.dart';
 import 'package:nfc/src/common/presentation/components/primary_text_field.dart';
 import 'package:nfc/src/common/presentation/handlers/error_handler.dart';
+import 'package:nfc/src/user/application/cubit/auth_cubit.dart';
 
 class UserLoginPage extends HookWidget {
   const UserLoginPage({Key? key}) : super(key: key);
@@ -102,13 +104,12 @@ class UserLoginPage extends HookWidget {
                   } else if (fileName.value.isEmpty) {
                     showError(context, 'Please choose a file');
                   } else {
-                    print(fileName.value);
-                    // context.read<AuthCubit>().createUser(
-                    //       name: nameController.text,
-                    //       nid: nidController.text,
-                    //       birthDate: birthDate.value,
-                    //       imageUrl: fileName.value,
-                    //     );
+                    context.read<AuthCubit>().createUser(
+                          name: nameController.text,
+                          nid: nidController.text,
+                          birthDate: birthDate.value,
+                          imageUrl: fileName.value,
+                        );
                   }
                 },
                 child: const Text('Register'),

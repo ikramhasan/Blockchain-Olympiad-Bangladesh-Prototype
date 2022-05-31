@@ -37,7 +37,7 @@ class InformationWidget extends StatelessWidget {
               const SizedBox(width: 8),
               subTextWidget != null
                   ? Positioned(
-                      left: 150,
+                      left: 160,
                       top: -14,
                       child: subTextWidget!,
                     )

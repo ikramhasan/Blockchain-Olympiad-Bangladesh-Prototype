@@ -30,13 +30,13 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Blockchain Olympiad Prototype',
         theme: ThemeData(
-          canvasColor: const Color(0xFF141132),
+          canvasColor: const Color(0xFF25242A),
           brightness: Brightness.dark,
           primarySwatch: Colors.blue,
           colorScheme: const ColorScheme.dark(
-            secondary: Colors.greenAccent,
+            secondary: Color(0xFF6366F1),
           ),
-          cardColor: const Color(0xFF0a0a23),
+          cardColor: const Color(0xFF302F33),
           listTileTheme: ListTileThemeData(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -49,13 +49,13 @@ class App extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              primary: Colors.greenAccent,
+              primary: const Color(0xFF6366F1),
               minimumSize: const Size(double.infinity, 50),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
-              primary: Colors.greenAccent,
+              primary: const Color(0xFF6366F1),
               minimumSize: const Size(double.infinity, 50),
             ),
           ),
